@@ -1,0 +1,13 @@
+{
+    "baseUrl": false,
+    "depsList": {
+        "director": "director",
+        "handlebars": "handlebars.min",
+        "jquery.qrcode": "jquery.qrcode.min",
+        "bootstrap": {
+            "js": "js/bootstrap.min",
+            "css": "css/bootstrap.min.css"
+        }
+    },
+    "defaultRunDeps": ["director", "handlebars","jquery.qrcode", "bootstrap"]
+}

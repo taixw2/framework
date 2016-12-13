@@ -1,0 +1,6 @@
+{
+	"description":"存放scss,image，通过gulp编译scss后生成style.css",
+	"images/":"图片文件目录",
+	"scss/":"scss目录",
+	"style.css":"最终只调用当前css"
+}

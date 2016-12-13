@@ -1,0 +1,8 @@
+{
+	"description":"源模块，当前模块没有任何功能，仅用于拷贝新模块",
+	"main.html":"当前模块依赖的html块，可以通过htmlFile设置为false，取消依赖，可以减少一次请求",
+	"todo.class.js":"模块控制器",
+	"include/":"依赖的js/json/css",
+	"parts/":"当前模块的一些零件，内部构造与当前模块一样，通过H.LM/this.LM('moduleName:partsModuleName',node,{},'',callback)的形式调用",
+	"setting":"依赖的json文件，可以通过H.LM/this.LM('moduleName',node,{},'settingName',callback)"
+}

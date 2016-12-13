@@ -1,0 +1,28 @@
+{
+	"indexPath":"/ueditor",
+    "routerList": [{
+        "path": "/home",
+        "module": "todo",
+        "settingFile": "setting",
+        "view":"#root",
+        "settingObj": {"todoObj":"yes"}
+    },{
+        "path": "/ueditor",
+        "module": "ueditor",
+        "settingFile": "setting",
+        "view":"#root",
+        "settingObj": {"todoObj":"yes"}
+    },{
+        "path": "/phoneView/:id",
+        "module": "phoneView",
+        "settingFile": "setting",
+        "view":"#root",
+        "settingObj": {"feedId":"95728587814994131"}
+    },{
+        "path": "/phone/:id",
+        "module": "phone",
+        "settingFile": "setting",
+        "view":"#root",
+        "settingObj": {}
+    }]
+}

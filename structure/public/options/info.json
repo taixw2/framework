@@ -1,0 +1,5 @@
+{
+	"description":"当前文件夹存放全局配置文件，模块配置文件建议放在模块的setting或者inculde/json中",
+	"deps.json":"依赖配置文件",
+	"router.json":"路由配置文件"
+}

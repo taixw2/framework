@@ -1,0 +1,5 @@
+{
+	"description":"当前文件夹存放一些公用的依赖的库，一些功能性的库建议放在extends中再在./options中的deps.json配置此库",
+	"jquery.min.js":"版本:2.2.3，将不兼容IE6-IE8，当时执行效率会更高",
+	"H.Formwork.core.js":"依赖于jquery的核心代码,当前版本1.0.0"
+}

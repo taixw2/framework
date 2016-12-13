@@ -1,0 +1,18 @@
+$maxWidth:640px;
+$titleColor:#333;
+$pColor:#666;
+$maxImgWidth:100%;
+$autoLeftRight:0 auto;
+
+
+.article{
+	margin:$autoLeftRight;
+	font-size: 14px;
+}
+.article *{
+	max-width:$maxImgWidth;
+	word-break: break-all;
+}
+.article img{
+	height:auto;
+}

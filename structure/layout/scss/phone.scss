@@ -1,0 +1,96 @@
+.wx_phone_preview {
+    z-index: 9997;
+    width: 360px;
+    height: 680px;
+    color: #222;
+    background: url("images/view_bg.png") 0 0 no-repeat;
+}
+.wx_phone {
+    padding: 84px 56px 0 17px;
+}
+
+.wx_phone_hd {
+    text-align: center;
+    color: #fff;
+    line-height: 38px;
+    height: 38px;
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    padding: 0 20px;
+}
+
+.wx_phone_bd {
+    position: relative;
+    overflow: auto;
+    background-color: #fff;
+    height: 470px;
+}
+.wx_phone_preview_appmsg {
+    padding: 15px 10px;
+}
+
+.appmsg_wap .rich_media_title {
+    margin-bottom: 12px;
+    line-height: 1.4;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.appmsg_wap .rich_media_meta_list {
+    margin-bottom: 18px;
+    line-height: 20px;
+    font-size: 0;
+}
+
+.appmsg_wap .rich_media_meta {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.appmsg_wap .rich_media_meta_text {
+    color: #8c8c8c;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.appmsg_wap .rich_media_meta_link {
+    color: #607fa6;
+    cursor: pointer;
+}
+
+.appmsg_wap .rich_media_thumb_wrp {
+    margin-bottom: 6px;
+}
+
+
+.appmsg_wap .rich_media_content {
+    word-wrap: break-word;
+    word-break: break-all;    
+    overflow: hidden;
+    color: #3e3e3e;
+}
+
+.appmsg_wap .rich_media_content * {
+    max-width: 100%!important;
+    box-sizing: border-box!important;
+    -webkit-box-sizing: border-box!important;
+    word-wrap: break-word!important;
+}
+
+.appmsg_wap .rich_media_content img {
+    height: auto!important;
+}
+
+.appmsg_wap .rich_media_content p {
+    clear: both;
+    min-height: 1em;
+    white-space: pre-wrap;
+}
+
+
