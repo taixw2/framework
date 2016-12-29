@@ -151,7 +151,7 @@ export default function() {
   }
 
   //define时执行依赖
-  function _execDep(depName,result) {
+  function execDep(depName,result) {
     var dep = modulesCache[depName];
     var callback;
     if (dep) {
@@ -298,7 +298,7 @@ export default function() {
         default:
         //not default
       }
-      _execDep(_defineModule.namespace,_defineModule.callback());
+      execDep(_defineModule.namespace,_defineModule.callback());
       // moduleCache[_defineModule.namespace] = _defineModule;
     } else {
 
@@ -306,7 +306,7 @@ export default function() {
         _defineModule.namespace = type(namespace) === "array" ? _defineModule.namespace : namespace;
         //bind 返回一个保存着所有依赖的函数
         _defineModule.callback =  args[args.length - 1].bind(null,arguments);
-        _execDep(_defineModule.namespace,_defineModule.callback());
+        execDep(_defineModule.namespace,_defineModule.callback());
       });
 
     }
@@ -318,8 +318,10 @@ export default function() {
   }
 
 
-
   _require.config = defaultConfig;
+
+  window.require = _require;
+  window.define = _define;
 
 
 }
