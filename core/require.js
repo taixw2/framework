@@ -28,8 +28,6 @@ export default function() {
       var exactPath;
       var config = _require.config;
       var id;
-
-
       if (matchUrl(path) === false) {
 
         if (type(config.paths[path]) === "undefined") {
@@ -47,10 +45,7 @@ export default function() {
       if (type(moduleCache[id]) !== "undefined") {
         return moduleCache[id];
       }
-
-
       loadScript(exactPath,callback,id);
-
   }
 
   /**
@@ -89,8 +84,7 @@ export default function() {
     }
   }
 
-
-
+  //require 只发布一个对象，而对象的回调在define中执行
   function _require(modules,callback) {
 
     var modulesLength;
@@ -106,13 +100,6 @@ export default function() {
     ) {
       return modules();
     } else if(type(modules) === "array") {
-
-
-      // requireHandle(modules,function(){
-      //   console.log(arguments);
-      // })
-
-      // modulesLength = modules.length;
 
       depHandler(modules,function(){
         //依赖加载完的回调
@@ -154,6 +141,7 @@ export default function() {
   function execDep(depName,result) {
     var dep = modulesCache[depName];
     var callback;
+    dep.status = "loaded";
     if (dep) {
       while (callback = dep.callback.shift()) {
         callback(result);
@@ -192,12 +180,9 @@ export default function() {
   }
 
 
-  //loadScript执行完成后执行这个函数
-  //如果存在依赖
-  //再次loadScript
-  //直到所有的都加载完成
-  //再执行回调
-  // require（args,function(xx){}）
+  //执行define,
+  // 判断当前所执行的脚本的id找出require中注册的moduleCache
+  // 执行对应的callback
   function _define(namespace,deps,callback) {
 
     var dependents = [];
@@ -214,9 +199,7 @@ export default function() {
       //兼容不支持document.currentScript < IE 9
       // 详见 ： http://www.cnblogs.com/rubylouvre/archive/2013/01/23/2872618.html
       try {
-
         强制报错
-
       } catch (e) {
         stack = e.stack;
         if(!stack && window.opera){
@@ -224,7 +207,6 @@ export default function() {
             stack = (String(e).match(/of linked script \S+/g) || []).join(" ");
         }
       }
-
       if (stack) {
         stack = stack.split( /[@ ]/g).pop();
         stack = stack[0] == "(" ? stack.slice(1,-1) : stack;
@@ -299,9 +281,7 @@ export default function() {
         //not default
       }
       execDep(_defineModule.namespace,_defineModule.callback());
-      // moduleCache[_defineModule.namespace] = _defineModule;
     } else {
-
       depHandler(dependents,function(){
         _defineModule.namespace = type(namespace) === "array" ? _defineModule.namespace : namespace;
         //bind 返回一个保存着所有依赖的函数
