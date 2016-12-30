@@ -1,7 +1,8 @@
 /**
  * 整体雏形
  */
-import {type,uuid,each,noop,every} from require("./utils");
+import {type,uuid,each,noop,every} from "./utils";
+import PubSub from "./PubSub";
 
 export default function() {
 
@@ -9,16 +10,20 @@ export default function() {
     return;
   }
 
+  var pubSub = new PubSub();
+
   var modulesCache = {};
   var doc = document;
   var body = doc.body;
   var superScript = document.currentScript ? true : false;
+
   var defaultConfig = {
     baseUrl : "/"
     paths : { },
     waitSeconds : 0,
     shim : {}
   }
+
 
   /**
    * require 处理
@@ -28,19 +33,22 @@ export default function() {
       var exactPath;
       var config = _require.config;
       var id;
+      // 判断路径是否远程路径
+      // (*):// || //
       if (matchUrl(path) === false) {
-
-        if (type(config.paths[path]) === "undefined") {
-            throw "加载模块路径错误";
+        // path : ""
+        // path  : undefined
+        if (config.paths[path] == false) {
+            throw new Error("加载模块路径错误");
         }  else {
           exactPath = config.baseUrl + config.paths[path]
         }
 
-      } else {
-          exactPath = path;
-      }
+        id = path;
 
-      id = config.paths[path] || path;
+      } else {
+          id = exactPath = path;
+      }
 
       if (type(moduleCache[id]) !== "undefined") {
         return moduleCache[id];
@@ -54,13 +62,11 @@ export default function() {
   function loadScript(path,callback,id) {
 
     var script = document.createElement;
-    // var currentScript = document.currentScript;
-    // var id = id || uuid;
-    // script.id = id;
     script.src = path;
     script.id = id;
 
-    registDep(id,callback);
+    // 添加回调
+    pubSub.$on(id,callback);
 
     script.onload = function(_script) {
       return function () {
@@ -111,48 +117,6 @@ export default function() {
   }
 
 
-  /**
-   * require缓存所有依赖
-   */
-  function registDep(depName,callback,result) {
-
-    var dep = modulesCache[depName];
-
-    if (dep) {
-        if (dep.status === "loaded") {
-          callback(dep.result);
-        } else {
-          dep.callbacks.push(callback);
-        }
-        return;
-    }
-
-    //每次require时都把require的回调保存起来，等到依赖加载完成则遍历执行这些回调
-    //如果status已经加载完则立即执行回调
-    modulesCache[depName] = {
-      name : depName,
-      callbacks : callback && [callback] || [],
-      status : "pending",
-      result : result && result || null //执行成功之后把执行结果缓存起来，方便下次require的时候直接把结果传到回调中
-    };
-  }
-
-  //define时执行依赖
-  function execDep(depName,result) {
-    var dep = modulesCache[depName];
-    var callback;
-    dep.status = "loaded";
-    if (dep) {
-      while (callback = dep.callback.shift()) {
-        callback(result);
-      }
-      dep.result = result;
-      return;
-    }
-    registDep(depName,"",result);
-  }
-
-
   //对依赖的处理
   function depHandler (modules,callback = noop) {
     var params = [];
@@ -186,16 +150,20 @@ export default function() {
   function _define(namespace,deps,callback) {
 
     var dependents = [];
-    var namespace = arguments[0];
-    var args = [].slice.call(arguments,1);
-    var currentScript = document.currentScript;
-    var stack;
+
+    var args = [].slice.call(arguments,0);
+
+    var namespace = args[0];
+
     var DOC = document;
+    var currentScript = DOC.currentScript;
+
+    var stack;
     var i,l;
 
+    // 第一个参数校验
     var arg1IsNamespace = namespace && type(namespace) === "string";
-
-    if (superScript && !arg1IsNamespace) {
+    if (!currentScript && !arg1IsNamespace) {
       //兼容不支持document.currentScript < IE 9
       // 详见 ： http://www.cnblogs.com/rubylouvre/archive/2013/01/23/2872618.html
       try {
@@ -211,7 +179,6 @@ export default function() {
         stack = stack.split( /[@ ]/g).pop();
         stack = stack[0] == "(" ? stack.slice(1,-1) : stack;
         stackUrl = stack.replace(/(:\d+)?:\d+$/i, "");
-
         scripts = DOC.scripts;
         i = 0;
         l = scripts.length;
@@ -234,64 +201,82 @@ export default function() {
       }
     }
 
+    var _namespace,_deps,_callback;
+
+
     var _defineModule = {
       namespace : namespace && type(namespace) === "string" ? namespace : currentScript.id
-      parms : [],
       callback : function(){}
     }
 
-    switch ("array") {
-      case type(namespace):
-        dependents = namespace;
-        break;
-      case type(deps):
-        if(every(deps,(v)=>!v)) {
-          dependents = false;
-        } else {
-          dependents = deps;
-        }
-        break;
-      default:
-        dependents = false;
-    }
+    /** 返回一个对象
+     * namespace
+     * deps
+     * callback
+     */
+    var normParam = paramsAdaptive.bind(this,currentScript.id).apply(this,args);
 
 
     //有依赖则要等到依赖加载完之后再缓存
-    if (type(dependents) === "boolean") {
-      //没有依赖
-      switch (type(namespace)) {
-        case "object":
-          _defineModule.callback = new Function(`
-              return ${namespace}
-            `);
-          break;
-        case "function":
-          _defineModule.callback = namespace;
-          break;
-        case "string":
-          //deps : function callback : undefined
-          //deps : array callback : function
-          if (type(deps) === "function" ) {
-            _defineModule.callback = deps；
-          } else {
-            _defineModule.callback = callback;
-          }
-          break;
-        default:
-        //not default
-      }
-      execDep(_defineModule.namespace,_defineModule.callback());
-    } else {
-      depHandler(dependents,function(){
-        _defineModule.namespace = type(namespace) === "array" ? _defineModule.namespace : namespace;
-        //bind 返回一个保存着所有依赖的函数
-        _defineModule.callback =  args[args.length - 1].bind(null,arguments);
-        execDep(_defineModule.namespace,_defineModule.callback());
-      });
+    if (!normParam.deps.length) {
 
+      pubSub.$emit(normParam.namespace,normParam.callback());
+
+    } else {
+
+      depHandler(normParam.deps,function(){
+        pubSub.$emit(
+          normParam.namespace,
+          normParam.callback.bind(null,arguments)()
+        );
+      });
     }
   }
 
+  /**
+   * 参数适配
+   */
+  function paramsAdaptive () {
+
+    /**
+     * 例举参数形式
+     * string,array,function
+     * Boolean(false),function
+     * array,function
+     * string,function
+     * function
+     */
+     var id = arguments[0];
+     var args = [].slice.call(arguments,1);
+     var namespace;
+     var deps;
+     var callback = args.pop();   //回调永远在最后一位的原则
+     var tmp;
+     tmp = args.shift();
+     // string 有时为 ""
+     if (type(tmp) === "string") {
+       namespace = tmp || id;
+     }
+     if (args.length === 1) {
+       deps = args[0];
+     } else {
+       deps = [];
+     }
+     if (type(tmp) === "array") {
+       namespace = id;
+       deps = tmp;
+     }
+     if (type(tmp) === "undefined") {
+       namespace = id;
+       deps = [];
+     }
+      return {
+        namespace,
+        deps,
+        callback
+      }
+
+  }
 
   function matchUrl (url) {
     return url.match(/.*:\/\/|^\/\//) ? true : false;
