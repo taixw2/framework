@@ -6,7 +6,7 @@ import {
     isArray
 } from "./utils";
 
-export class Data {
+export default class Data {
 
     constructor() {
         this.expando = uuid();
