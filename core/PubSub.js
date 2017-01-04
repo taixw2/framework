@@ -1,4 +1,4 @@
-export class PubSub {
+export default class PubSub {
     constructor() {
         this.handles = {};
     }
@@ -31,8 +31,10 @@ export class PubSub {
 
         handles.memory = args;
 
-        while (handle = handles.callbacks.shift()) {
-            handle.apply(this, args);
+        handle = handles.callbacks;
+
+        while ( handle ) {
+            handle.shift().apply(this, args);
         }
     }
 }
