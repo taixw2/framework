@@ -5,17 +5,18 @@ export class PubSub {
     $on(eventType, handle) {
         var handles = this.handles[eventType];
         if (!(eventType in this.handles)) {
-            handles = {
+            this.handles[eventType] = {
                 memory: null,
                 callbacks: []
             };
+            handles = this.handles[eventType];
         }
 
         if (handles.memory) {
             handle.apply(this, this.handles[eventType]);
             return;
         }
-        
+
         handles.callbacks.push(handle);
 
     }
