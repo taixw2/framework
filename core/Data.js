@@ -1,4 +1,4 @@
-//参考jquery.data设计
+//参考jquery.data
 import {
     uuid,
     type,
