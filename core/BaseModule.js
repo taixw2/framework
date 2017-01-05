@@ -13,7 +13,8 @@ class Base {
   }
   init (mod,ele,opt,callback)   {
 
-
+    //终于执行到这里
+    //在脑中运行真的是....
 
   }
 }

@@ -34,20 +34,21 @@ export default function() {
     /**
      * require处理
      * @param  {[type]}   path     [路径，可能是远程路径，也可能是config中定义的]
+     * @param  {[type]}   _private     [是否用于内部使用]
      * @param  {[type]}   noDefine [一些没有使用define导出并且无法在config配置的项]
      * @param  {Function} callback [加载完成后的回调]
      */
-    function requireHandle(path, noDefine, callback) {
+    function requireHandle(path, _private, callback) {
         //精准路径
         var exactPath;
         var requireExport;
         var config = _require.config;
         var id;
+
         // 判断路径是否远程路径
         // (*):// || //
         if (matchUrl(path) === false) {
-            // path : ""
-            // path  : undefined
+
             if (!config.paths[path]) {
                 throw new Error("加载模块路径错误");
             } else {
@@ -55,17 +56,17 @@ export default function() {
             }
             id = path;
 
-            requireExport = noDefine ? path : config.exports[path];
-
         } else {
             id = exactPath = path;
         }
+
+        requireExport = _private ? path : config.exports[path];
 
         if (type(moduleCache[id]) !== "undefined") {
             return moduleCache[id];
         }
 
-        loadScript(exactPath, id, requireExport,callback);
+        loadScript(exactPath, id, requireExport, callback);
     }
 
     /**
@@ -125,18 +126,32 @@ export default function() {
             (!modules && type(callback) === "function")
         ) {
             return modules();
-        } else if (type(modules) === "array") {
+        } else if (type(modules) === "string") {
 
-            depHandler(modules, function() {
-                //依赖加载完的回调
-                callback.apply(this, arguments);
-            });
+            modules = [modules];
+
         }
+
+        depHandler(modules, function() {
+            //依赖加载完的回调
+            callback.apply(this, arguments);
+        });
+    }
+
+    //仅用于内部
+    function _coreRequire(modules, callback) {
+
+        depHandler([modules], function() {
+            //依赖加载完的回调
+            callback.apply(this, arguments);
+
+        }, true);
+
     }
 
 
     //对依赖的处理
-    function depHandler(modules, callback = noop) {
+    function depHandler(modules, callback = noop, _private = false) {
         var params = [];
         var start = 0;
         var l = modules.length;
@@ -147,7 +162,7 @@ export default function() {
         }
 
         each(modules, (v, i) => {
-            requireHandle(v, function(_i) {
+            requireHandle(v, _private, function(_i) {
                 return function(param) {
                     //执行define的时候会执行这个回调
                     //表示loaded
@@ -291,7 +306,7 @@ export default function() {
             namespace,
             deps,
             callback
-        }
+        };
 
     }
 
@@ -306,4 +321,5 @@ export default function() {
     window.define = _define;
 
 
+    return _coreRequire;
 }
