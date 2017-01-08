@@ -22,6 +22,12 @@ export default function(subModule, supModule) {
         F = null;
     }
 
+    Constructor.prototype.main = function() {
+
+      throw new Error("main方法未实现");
+
+    };
+
     extend(Constructor.prototype, new subModule());
 
     Constructor.prototype.constructor = subModule;
