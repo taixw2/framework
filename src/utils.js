@@ -89,6 +89,47 @@ export const every = function(arr,callback,context) {
 export const noop = function(){};
  //
 
-export const trim = function(str) {
+ export const extend = function() {
 
-};
+     var args = [].slice.call(arguments);
+     var target = args.shift();
+     var l = args.length;
+     var deep = false;
+     var copy;
+     var clone;
+     var i = 0;
+     var k;
+
+     if (type(target) == "boolean") {
+         deep = target;
+         target = args.shift();
+         l--;
+     }
+
+     for (; i < l; i++) {
+
+         option = args[i];
+
+         if (type(option) == "null") {
+
+             for (k in option) {
+
+                 copy = option[k];
+
+                 if (deep && type(copy) == "object") {
+
+                     target[k] = extend(deep, type(target[k]) == "object" ? target[k] : {}, copy);
+
+                 } else {
+
+                   target[k] = copy[k];
+
+                 }
+
+             }
+
+         }
+
+     }
+     return target;
+ };

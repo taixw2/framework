@@ -7,7 +7,6 @@ import {
 } from "./utils";
 
 export default class Data {
-
     constructor() {
         this.expando = uuid();
     }
