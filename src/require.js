@@ -50,7 +50,8 @@ export default function() {
         if (matchUrl(path) === false) {
 
             if (!config.paths[path]) {
-                throw new Error("加载模块路径错误");
+              exactPath = path;
+                // throw new Error("加载模块路径错误:" + path);
             } else {
                 exactPath = config.baseUrl + config.paths[path];
             }
@@ -84,9 +85,9 @@ export default function() {
 
         script.onload = function(_script, _id, _exp) {
             return function() {
-                script.onload = null;
+                _script.onload = null;
                 // callback();
-                removeScript();
+                removeScript(_script);
 
                 //目前仅支持
                 // 要么使用define导出js

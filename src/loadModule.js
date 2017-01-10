@@ -22,8 +22,6 @@ function loadModuleHandle(moduleName, accessModule, callback) {
 
     var curModule;
     var originModulePath = config.basePath + (config.projectName ? "/" + config.projectName : "") + config.modulesPath + "/";
-    console.log(originModulePath);
-    console.log(config);
 
     curModule = accessModule(moduleName);
 
@@ -77,9 +75,7 @@ export default function() {
     loadModuleHandle(args[0], accessModule, function(_args) {
 
         return function(ModuleConstructor) {
-
             new ModuleConstructor(_args[0], _args[1], _args[2], _args[3]);
-
             accessModule(ModuleConstructor);
         };
 

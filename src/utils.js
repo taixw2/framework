@@ -109,7 +109,7 @@ export const noop = function() {};
 
          option = args[i];
 
-         if (type(option) == "null") {
+         if (type(option) !== "null" && type(option) === "object") {
 
              for (k in option) {
 
@@ -121,7 +121,8 @@ export const noop = function() {};
 
                  } else {
 
-                   target[k] = copy[k];
+
+                   target[k] = copy;
 
                  }
 

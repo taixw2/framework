@@ -141,7 +141,7 @@ var extend = function extend() {
 
         option = args[i];
 
-        if (type(option) == "null") {
+        if (type(option) !== "null" && type(option) === "object") {
 
             for (k in option) {
 
@@ -152,7 +152,7 @@ var extend = function extend() {
                     target[k] = extend(deep, type(target[k]) == "object" ? target[k] : {}, copy);
                 } else {
 
-                    target[k] = copy[k];
+                    target[k] = copy;
                 }
             }
         }
@@ -348,8 +348,7 @@ var PubSub = function () {
             handles.memory = args;
 
             handle = handles.callbacks;
-
-            while (handle) {
+            while (handle.length) {
                 handle.shift().apply(this, args);
             }
         }
@@ -399,7 +398,8 @@ var requireHandle = function () {
         if (matchUrl(path) === false) {
 
             if (!config.paths[path]) {
-                throw new Error("加载模块路径错误");
+                exactPath = path;
+                // throw new Error("加载模块路径错误:" + path);
             } else {
                 exactPath = config.baseUrl + config.paths[path];
             }
@@ -432,9 +432,9 @@ var requireHandle = function () {
 
         script.onload = function (_script, _id, _exp) {
             return function () {
-                script.onload = null;
+                _script.onload = null;
                 // callback();
-                removeScript();
+                removeScript(_script);
 
                 //目前仅支持
                 // 要么使用define导出js
@@ -674,8 +674,6 @@ function loadModuleHandle(moduleName, accessModule, callback) {
 
     var curModule;
     var originModulePath = config.basePath + (config.projectName ? "/" + config.projectName : "") + config.modulesPath + "/";
-    console.log(originModulePath);
-    console.log(config);
 
     curModule = accessModule(moduleName);
 
@@ -726,9 +724,7 @@ var loadModule = function () {
     loadModuleHandle(args[0], accessModule, function (_args) {
 
         return function (ModuleConstructor) {
-
             new ModuleConstructor(_args[0], _args[1], _args[2], _args[3]);
-
             accessModule(ModuleConstructor);
         };
     }(args));
@@ -766,7 +762,19 @@ var R = function R() {
 
         extend(config, _initObj.config);
 
-        R(_initObj.$module, _initObj.$mount, _initObj.setting || {});
+        R(_initObj.$module, _initObj.$mount, _initObj.setting || {}, noop);
+    }
+
+    /**
+     * [length 我晕，，，忘了定于模块，导致加载不到模块]
+     * @type {[type]}
+     */
+    if (args.length == 3 && type(args[2]) == "function") {
+
+        dataPriv.access(moduleCache, args[0], {
+            extend: args[1],
+            module: args[2]
+        });
     }
 
     /**
@@ -776,7 +784,7 @@ var R = function R() {
      * setting  加载模块所注入的配置,区分不同场景
      * callback 加载模块之后的回调
      */
-    if (args.length >= 2 && (/^#/.test(args[1]) || args[1].nodeType)) {
+    if (args.length == 4 && (/^#/.test(args[1]) || args[1].nodeType)) {
 
         cacheModule = dataPriv.access(moduleCache, args[0]);
 

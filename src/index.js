@@ -3,7 +3,8 @@ import BaseModule from "./BaseModule";
 import config from "./framwork.config";
 import {
     type,
-    extend
+    extend,
+    noop
 } from "./utils";
 import loadModule from "./loadModule";
 
@@ -39,12 +40,25 @@ const R = function() {
 
       extend(config,_initObj.config);
 
-
       R(
         _initObj.$module,
         _initObj.$mount,
-        _initObj.setting || {}
+        _initObj.setting || {},
+        noop
       );
+
+    }
+
+    /**
+     * [length 我晕，，，忘了定于模块，导致加载不到模块]
+     * @type {[type]}
+     */
+    if (args.length == 3 && type(args[2]) == "function") {
+
+      dataPriv.access(moduleCache, args[0],{
+        extend : args[1],
+        module : args[2]
+      });
 
     }
 
@@ -55,10 +69,8 @@ const R = function() {
      * setting  加载模块所注入的配置,区分不同场景
      * callback 加载模块之后的回调
      */
-    if (args.length >= 2 &&
+    if (args.length == 4 &&
         (/^#/.test(args[1]) || args[1].nodeType)) {
-
-
 
         cacheModule = dataPriv.access(moduleCache, args[0]);
 

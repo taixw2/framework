@@ -32,8 +32,7 @@ export default class PubSub {
         handles.memory = args;
 
         handle = handles.callbacks;
-
-        while ( handle ) {
+        while ( handle.length ) {
             handle.shift().apply(this, args);
         }
     }
