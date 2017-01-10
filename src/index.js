@@ -30,7 +30,6 @@ const R = function() {
     var cacheModule;
     var _initObj;
 
-
     /**
      * initFramwork
      */
@@ -40,10 +39,11 @@ const R = function() {
 
       extend(config,_initObj.config);
 
+
       R(
         _initObj.$module,
         _initObj.$mount,
-        _initObj.setting || {},
+        _initObj.setting || {}
       );
 
     }
@@ -56,7 +56,9 @@ const R = function() {
      * callback 加载模块之后的回调
      */
     if (args.length >= 2 &&
-        (args[1].test(/^#/) || args[1].nodeType)) {
+        (/^#/.test(args[1]) || args[1].nodeType)) {
+
+
 
         cacheModule = dataPriv.access(moduleCache, args[0]);
 
@@ -69,7 +71,7 @@ const R = function() {
                  * @param  {[type]} modeleContructor [模块构造器]
                  * @return {[type]}                  [description]
                  */
-                return function accessModule(moduleOpt) {
+                return function accessModule(moduleOpt,_moduleName) {
 
                     if (type(moduleOpt) == "string") {
 
@@ -86,6 +88,8 @@ const R = function() {
                 };
 
             }(args[0])));
+
+            return;
 
         }
 
@@ -108,3 +112,6 @@ R.use = function(plugin, options) {
 
     plugin(BaseModule, options);
 };
+/*jshint ignore:start*/
+window.R = R;
+/*jshint ignore:end*/

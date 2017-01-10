@@ -62,8 +62,8 @@ export default function() {
 
         requireExport = _private ? path : config.exports[path];
 
-        if (type(moduleCache[id]) !== "undefined") {
-            return moduleCache[id];
+        if (type(modulesCache[id]) !== "undefined") {
+            return modulesCache[id];
         }
 
         loadScript(exactPath, id, requireExport, callback);
@@ -74,7 +74,7 @@ export default function() {
      */
     function loadScript(path, id, exp, callback) {
 
-        var script = document.createElement;
+        var script = document.createElement("script");
         script.src = path;
         script.id = id;
 
@@ -96,6 +96,7 @@ export default function() {
                 }
             };
         }(script, id, exp);
+
         body.appendChild(script);
     }
 
@@ -200,7 +201,7 @@ export default function() {
             //兼容不支持document.currentScript < IE 9
             // 详见 ： http://www.cnblogs.com/rubylouvre/archive/2013/01/23/2872618.html
             try {
-                强制报错
+                a.b.c.d.e();
             } catch (e) {
                 stack = e.stack;
                 if (!stack && window.opera) {

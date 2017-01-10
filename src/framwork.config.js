@@ -2,7 +2,7 @@
 //配置被用在loadModule.js中
 export default {
 
-  bathPath : location.origin,
+  basePath : location.origin,
   projectName : "",
   modulesPath : "/modules",
 

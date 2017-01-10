@@ -13,10 +13,14 @@ class Base {
   }
   init (mod,ele,opt,callback)   {
 
+    /*jshint ignore:start*/
+    console.log(arguments);
+    /*jshint ignore:end*/
+    
     //终于执行到这里
     //在脑中运行真的是....
 
   }
 }
 
-export default BaseModule =  createModule(Base);
+export default createModule(Base);

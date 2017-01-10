@@ -14,6 +14,8 @@ export default class Data {
         var value = owner[this.expando];
         if (!value) {
 
+          value = {};
+
             Object.defineProperty(owner, this.expando, {
                 value: value,
                 configurable: true //允许使用delete 删除
