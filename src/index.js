@@ -42,12 +42,14 @@ const R = function() {
 
       extend(config,_initObj.config);
 
-      R(
-        _initObj.$module,
-        _initObj.$mount,
-        _initObj.setting || {},
-        noop
-      );
+      document.addEventListener("DOMContentLoaded",()=>{
+        R(
+          _initObj.$module,
+          _initObj.$mount,
+          _initObj.setting || {},
+          noop
+        );
+      });
 
     }
 
@@ -73,6 +75,10 @@ const R = function() {
      */
     if (args.length == 4 &&
         (/^#/.test(args[1]) || args[1].nodeType)) {
+
+          if (/^#/.test(args[1])) {
+            args[1] = document.getElementById(args[1].substr(1));
+          }
 
         cacheModule = dataPriv.access(moduleCache, args[0]);
 

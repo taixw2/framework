@@ -68,9 +68,9 @@ export default function() {
     var args = [].slice.call(arguments);
     var accessModule = args.pop();
 
-    if (type(args[1]) == "string") {
-        args[1] = document.getElementById(args[1].substr(1));
-    }
+    // if (type(args[1]) == "string") {
+    //     args[1] = document.getElementById(args[1].substr(1));
+    // }
 
     loadModuleHandle(args[0], accessModule, function(_args) {
 
