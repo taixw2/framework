@@ -1,4 +1,6 @@
 
 R("root","BaseModule",function(){
-  console.log(this);
+  this.onLoad = function(){
+    this.$ajax();
+  };
 });

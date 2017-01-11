@@ -130,6 +130,12 @@ var extend = function extend() {
     var i = 0;
     var option;
     var k;
+    var callback = noop;
+
+    //最后一个如果是回调
+    if (type(args[l - 1]) == "function") {
+        callback = args.pop();
+    }
 
     if (type(target) == "boolean") {
         deep = target;
@@ -146,6 +152,10 @@ var extend = function extend() {
             for (k in option) {
 
                 copy = option[k];
+
+                if (callback(copy, k) === true) {
+                    continue;
+                }
 
                 if (deep && type(copy) == "object") {
 
@@ -257,11 +267,6 @@ var createModule = function (subModule, supModule) {
         F = null;
     }
 
-    Constructor.prototype.main = function () {
-
-        throw new Error("main方法未实现");
-    };
-
     extend(Constructor.prototype, new subModule());
 
     Constructor.prototype.constructor = subModule;
@@ -273,28 +278,30 @@ var createModule = function (subModule, supModule) {
  * BaseClass
  */
 
-var Base = function () {
-  function Base() {
-    classCallCheck(this, Base);
+var Base = function Base() {
+  classCallCheck(this, Base);
 
 
-    this.version = "1.0.0";
-  }
+  this.version = "1.0.0";
 
-  createClass(Base, [{
-    key: "init",
-    value: function init(mod, ele, opt, callback) {
+  this.onLoad = noop;
+  this.onReady = noop;
 
-      /*jshint ignore:start*/
-      console.log(arguments);
-      /*jshint ignore:end*/
+  this.init = function (mod, ele, opt, callback) {
 
-      //终于执行到这里
-      //在脑中运行真的是....
-    }
-  }]);
-  return Base;
-}();
+    /*jshint ignore:start*/
+    /*jshint ignore:end*/
+
+    //终于执行到这里
+    //在脑中运行真的是....
+    this.onReady();
+
+    /**
+     * 处理一系列事情之后
+     */
+    this.onLoad();
+  };
+};
 
 var BaseModule = createModule(Base);
 
@@ -730,6 +737,34 @@ var loadModule = function () {
     }(args));
 };
 
+/**
+ * 安装插件
+ * @param  {[type]} plugin  [安装插件回调]
+ * @param  {[type]} options [安装插件所传入的配置]
+ * @return {[type]}         [description]
+ */
+var use = function (BaseModule) {
+
+  return function (plugins, options) {
+
+    if (type(plugins) == "object") {
+      plugins = plugins.install;
+    }
+
+    if (type(plugins) == "function") {
+      plugins = plugins(options);
+    }
+
+    extend(BaseModule.prototype, plugins, function (v, k) {
+
+      if (BaseModule.prototype[k]) {
+        console.warn("禁止篡改已经存在的方法");
+        return true;
+      }
+    });
+  };
+};
+
 var moduleCache = {};
 
 var dataPriv = new Data();
@@ -818,20 +853,7 @@ var R = function R() {
     }
 };
 
-/**
- * 添加插件
- * @param  {[function | object]} plugin  [插件对象]
- * @param  {[type]} options [插件配置对象]
- * @return {[type]}         [description]
- */
-R.use = function (plugin, options) {
-
-    if (type(plugin) == "object") {
-        plugin = plugin.install;
-    }
-
-    plugin(BaseModule, options);
-};
+R.use = use(BaseModule);
 /*jshint ignore:start*/
 window.R = R;
 /*jshint ignore:end*/
