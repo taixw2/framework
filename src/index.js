@@ -8,6 +8,8 @@ import {
 } from "./utils";
 import loadModule from "./loadModule";
 
+import use from "./install-plugins";
+
 const moduleCache = {};
 
 const dataPriv = new Data();
@@ -107,23 +109,10 @@ const R = function() {
 
         new cacheModule(args[0], args[1], args[2], args[3]);
     }
-
 };
 
-/**
- * 添加插件
- * @param  {[function | object]} plugin  [插件对象]
- * @param  {[type]} options [插件配置对象]
- * @return {[type]}         [description]
- */
-R.use = function(plugin, options) {
 
-    if (type(plugin) == "object") {
-        plugin = plugin.install;
-    }
-
-    plugin(BaseModule, options);
-};
+R.use = use(BaseModule);
 /*jshint ignore:start*/
 window.R = R;
 /*jshint ignore:end*/

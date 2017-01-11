@@ -5,6 +5,7 @@ import {
 
 export default function(subModule, supModule) {
 
+
     var Constructor = function() {
 
         if (this.init) this.init.apply(this, arguments);
@@ -22,13 +23,10 @@ export default function(subModule, supModule) {
         F = null;
     }
 
-    Constructor.prototype.main = function() {
-
-      throw new Error("main方法未实现");
-
-    };
-
-    extend(Constructor.prototype, new subModule());
+    extend(
+      Constructor.prototype,
+      new subModule()
+    );
 
     Constructor.prototype.constructor = subModule;
 

@@ -98,6 +98,12 @@ export const noop = function() {};
      var i = 0;
      var option;
      var k;
+     var callback = noop;
+
+     //最后一个如果是回调
+     if (type(args[l-1]) == "function") {
+       callback = args.pop();
+     }
 
      if (type(target) == "boolean") {
          deep = target;
@@ -114,6 +120,10 @@ export const noop = function() {};
              for (k in option) {
 
                  copy = option[k];
+
+                 if ( callback(copy,k) === true) {
+                   continue;
+                 }
 
                  if (deep && type(copy) == "object") {
 

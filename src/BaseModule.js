@@ -3,6 +3,8 @@
  */
 
 import createModule from "./createModule";
+import {noop} from "./utils";
+
 
 class Base {
 
@@ -10,17 +12,27 @@ class Base {
 
     this.version = "1.0.0";
 
-  }
-  init (mod,ele,opt,callback)   {
+    this.onLoad = noop;
+    this.onReady = noop;
 
-    /*jshint ignore:start*/
-    console.log(arguments);
-    /*jshint ignore:end*/
-    
-    //终于执行到这里
-    //在脑中运行真的是....
+    this.init = function(mod,ele,opt,callback)   {
+
+        /*jshint ignore:start*/
+        /*jshint ignore:end*/
+
+        //终于执行到这里
+        //在脑中运行真的是....
+        this.onReady();
+
+
+        /**
+         * 处理一系列事情之后
+         */
+        this.onLoad();
+      };
 
   }
+
 }
 
 export default createModule(Base);
