@@ -3,7 +3,6 @@
  */
 
 import createModule from "./createModule";
-import {noop} from "./utils";
 
 
 class Base {
@@ -12,8 +11,7 @@ class Base {
 
     this.version = "1.0.0";
 
-    this.onLoad = noop;
-    this.onReady = noop;
+
 
     this.init = function(mod,ele,opt,callback)   {
 
@@ -24,11 +22,12 @@ class Base {
         //在脑中运行真的是....
         this.onReady();
 
+        this.onLoad();
 
         /**
-         * 处理一系列事情之后
+         * 挂载到节点之后
          */
-        this.onLoad();
+        this.onShow();
       };
 
   }
