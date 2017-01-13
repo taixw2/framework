@@ -6,11 +6,12 @@ import {
 
 export default function(subModule, supModule) {
 
-
-    var Constructor = function() {
-
-        if (this.init) this.init.apply(this, arguments);
-
+    //模块构造器
+    var ModuleConstructor = function() {
+        if (this.init)
+          this.init.apply(this, arguments);
+        else
+          console.warn("该模块没有继承BaseClass");
     };
 
     if (type(supModule) == "function") {
@@ -19,13 +20,13 @@ export default function(subModule, supModule) {
 
         F.prototype = supModule.prototype;
 
-        Constructor.prototype = new F();
+        ModuleConstructor.prototype = new F();
 
         F = null;
     }
 
     extend(
-      Constructor.prototype,
+      ModuleConstructor.prototype,
       {
         /**
          * [每个模块需要重写以下方法，无法从父模块继承]
@@ -40,8 +41,8 @@ export default function(subModule, supModule) {
       new subModule()
     );
 
-    Constructor.prototype.constructor = subModule;
+    ModuleConstructor.prototype.constructor = subModule;
 
-    return Constructor;
+    return ModuleConstructor;
 
 }
