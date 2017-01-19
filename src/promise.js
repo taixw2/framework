@@ -60,7 +60,6 @@ function publishFulfillment(promise){
 
   }
   /*jshint ignore:end*/
-
 }
 
 export class Promise{
@@ -69,10 +68,7 @@ export class Promise{
 
     this._then = [];
 
-
     invokeResolver(resolver,this);
-
-
 
   }
 
