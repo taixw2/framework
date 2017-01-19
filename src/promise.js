@@ -16,9 +16,8 @@ function invokeResolver(resolver,promise) {
   function resolverPromise(value) {
 
     if (promise.state_ === PENDING) {
-      promise.state_ = SEALED;
       promise.data_ = value;
-      asyncCall(publishFulfillment,promise);
+
     }
   }
 
@@ -33,34 +32,6 @@ function invokeResolver(resolver,promise) {
 
 }
 
-function asyncCall(callback,args) {
-  var promiseCallback;
-  asyncQueue.push([callback,args]);
-
-  if (!asyncTimer) {
-      asyncTimer = true;
-      /*jshint ignore:start*/
-      while (promiseCallback = asyncQueue.shift()) {
-        promiseCallback[0](promiseCallback[1])
-      }
-      /*jshint ignore:end*/
-      asyncQueue = [];
-      asyncTimer = false;
-  }
-}
-
-
-function publishFulfillment(promise){
-  var callbacks = promise._then;
-  var callback;
-  promise.state_ = FULFILLED;
-
-  /*jshint ignore:start*/
-  while (callback = callbacks.shift()) {
-
-  }
-  /*jshint ignore:end*/
-}
 
 export class Promise{
 
