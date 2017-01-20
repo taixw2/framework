@@ -1,28 +1,30 @@
-import {
-  isArray,
-  noop
-} from "./utils.js";
+// import {
+//   isArray,
+//   noop
+// } from "./utils.js";
 
+const noop = function () {};
 const PENDING = "pending";
 const SEALED = "sealed";
 const FULFILLED = "fulfilled";
 const REJECTED = "rejected";
 
-let asyncQueue = [];
-let asyncTimer = false;
 
 function invokeResolver(resolver,promise) {
 
   function resolverPromise(value) {
-
-    if (promise.state_ === PENDING) {
-      promise.data_ = value;
-
+    if (promise.state === PENDING) {
+      promise.data = value;
+      promise.state = FULFILLED;
     }
+
   }
 
   function rejectPromise(reason) {
-
+    if (promise.state === PENDING) {
+        promise.data = reason;
+        promise.state = REJECTED;
+    }
   }
   try {
     resolver(resolverPromise,rejectPromise);
@@ -33,11 +35,20 @@ function invokeResolver(resolver,promise) {
 }
 
 
-export class Promise{
+//执行then
+function asycnCall(arg) {
+
+}
+
+
+
+class Promise{
 
   constructor (resolver) {
 
     this._then = [];
+    this.data = null;
+    this.state = PENDING;
 
     invokeResolver(resolver,this);
 
@@ -45,8 +56,19 @@ export class Promise{
 
   then (fulfilled = noop, rejected = noop) {
 
+    const subscriber = {
+      owrn : this,
+      then : new Promise(noop),
+      fulfilled,
+      rejected
+    };
 
-
+    if (this.state === FULFILLED || this.state === REJECTED) {
+      asycnCall(subscriber);
+    } else {
+      this._then.push(subscriber);
+    }
+    return subscriber.then;
   }
 
   "catch" (onRejection) {
@@ -58,3 +80,14 @@ export class Promise{
   }
 
 }
+
+const promise = new Promise(function(fulfill,reject){
+  setTimeout(()=>{
+    fulfill(123);
+  },200);
+});
+promise.then(res=>{
+  console.log(res);
+},res=>{
+  console.log(res);
+});
