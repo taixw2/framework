@@ -16,6 +16,7 @@ function invokeResolver(resolver,promise) {
     if (promise.state === PENDING) {
       promise.data = value;
       promise.state = FULFILLED;
+      thenCall(promise);
     }
 
   }
@@ -24,8 +25,10 @@ function invokeResolver(resolver,promise) {
     if (promise.state === PENDING) {
         promise.data = reason;
         promise.state = REJECTED;
+        thenCall(promise);
     }
   }
+
   try {
     resolver(resolverPromise,rejectPromise);
   } catch (e) {
@@ -34,12 +37,26 @@ function invokeResolver(resolver,promise) {
 
 }
 
+function thenCall(promise) {
 
-//执行then
-function asycnCall(arg) {
+  let thens = promise._then;
+  let type;
 
+  if (promise.state === REJECTED) {
+    type = "fulfilled";
+  } else {
+    type = "rejected";
+  }
+
+  for (let i = 0; i < thens.length; i++) {
+    asycnCall(thens[i],type,promise.data);
+  }
+  promise._then = [];
 }
 
+function asycnCall(thenAbel,type,data) {
+    thenAbel[type](data);
+}
 
 
 class Promise{
@@ -64,7 +81,7 @@ class Promise{
     };
 
     if (this.state === FULFILLED || this.state === REJECTED) {
-      asycnCall(subscriber);
+      thenCall(subscriber);
     } else {
       this._then.push(subscriber);
     }
@@ -84,7 +101,7 @@ class Promise{
 const promise = new Promise(function(fulfill,reject){
   setTimeout(()=>{
     fulfill(123);
-  },200);
+  },2000);
 });
 promise.then(res=>{
   console.log(res);
