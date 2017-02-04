@@ -3,6 +3,7 @@
  */
 
 import createModule from "./createModule";
+import require from "./require";
 
 
 class Base {
@@ -22,7 +23,11 @@ class Base {
         //在脑中运行真的是....
         this.onReady();
 
-        this.onLoad();
+
+        //js被加载后执行这个方法
+        //this.onLoad();
+
+        // console.log(require);
 
         /**
          * 挂载到节点之后
