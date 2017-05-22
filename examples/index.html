@@ -8,46 +8,8 @@
 </head>
 <body>
   <div id="root"></div>
-  <script type="text/javascript" src="./framwork.js"> </script>
+  <script type="text/javascript" src="../dest/framwork.js"> </script>
   <script type="text/javascript">
-
-  R.use({
-    install : function(options) {
-      console.log(options);
-      return {
-        $ajax () {
-          console.log("return ajax");
-        },
-        $router () {
-          console.log("return router")
-        }
-       }
-    }
-  },{
-    arg : 1
-  });
-
-  R.use(function(options){
-    return {
-      $data () {
-
-      }
-    }
-  }, {
-    "args" : 1
-  });
-
-
-  R.use({
-    install : {
-      $parseHTML (){
-        return "balabala";
-      }
-    }
-  });
-
-
-
 
     R({
       $module : "root",

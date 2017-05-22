@@ -1,25 +1,17 @@
-import Data from "./Data";
-import BaseModule from "./BaseModule";
-import config from "./framwork.config";
-import {
-    type,
-    extend,
-    noop
-} from "./utils";
-import loadModule from "./loadModule";
-
-import use from "./install-plugins";
-
-const moduleCache = {};
-
-const dataPriv = new Data();
-
-dataPriv.access(moduleCache);
-
-dataPriv.access(moduleCache, "BaseModule", {
+import Data from './Data'
+import BaseModule from './BaseModule'
+import config from './framwork.config'
+import { type, extend, noop } from './utils'
+import loadModule from './loadModule'
+import pluginsConfig from './plugins/pluginsConfig'
+import use from './install-plugins'
+const moduleCache = {}
+const dataPriv = new Data()
+dataPriv.access(moduleCache)
+dataPriv.access(moduleCache, 'BaseModule', {
     extend: null,
     module: BaseModule
-});
+})
 
 // moduleName, extend, ModuleCallback
 /**
@@ -29,40 +21,40 @@ dataPriv.access(moduleCache, "BaseModule", {
  */
 const R = function() {
 
-    var args = [].slice.call(arguments);
-    var cacheModule;
-    var _initObj;
+    var args = [].slice.call(arguments)
+    var cacheModule
+    var _initObj
 
     /**
      * initFramwork
      */
-    if (args.length == 1 && type(args[0]) == "object") {
+    if (args.length == 1 && type(args[0]) == 'object') {
 
-      _initObj = args[0];
+      _initObj = args[0]
 
-      extend(config,_initObj.config);
+      extend(config,_initObj.config)
 
-      document.addEventListener("DOMContentLoaded",()=>{
+      document.addEventListener('DOMContentLoaded',()=>{
         R(
           _initObj.$module,
           _initObj.$mount,
           _initObj.setting || {},
           noop
-        );
-      });
+        )
+      })
 
     }
 
     /**
-     * [length 我晕，，，忘了定于模块，导致加载不到模块]
+     * [定义模块，把模块保存起来]
      * @type {[type]}
      */
-    if (args.length == 3 && type(args[2]) == "function") {
+    if (args.length == 3 && type(args[2]) == 'function') {
 
       dataPriv.access(moduleCache, args[0],{
         extend : args[1],
         module : args[2]
-      });
+      })
 
     }
 
@@ -77,10 +69,10 @@ const R = function() {
         (/^#/.test(args[1]) || args[1].nodeType)) {
 
           if (/^#/.test(args[1])) {
-            args[1] = document.getElementById(args[1].substr(1));
+            args[1] = document.getElementById(args[1].substr(1))
           }
 
-        cacheModule = dataPriv.access(moduleCache, args[0]);
+        cacheModule = dataPriv.access(moduleCache, args[0])
 
         if (!cacheModule) {
 
@@ -91,34 +83,43 @@ const R = function() {
                  * @param  {[type]} modeleContructor [模块构造器]
                  * @return {[type]}                  [description]
                  */
-                return function accessModule(moduleOpt,_moduleName) {
+                return (moduleOpt, _moduleName) => {
 
-                    if (type(moduleOpt) == "string") {
+                    if (type(moduleOpt) == 'string') {
 
-                        return dataPriv.access(moduleCache, moduleOpt);
+                        return dataPriv.access(moduleCache, moduleOpt)
 
-                    } else if (type(moduleOpt) == "function") {
+                    } else if (type(moduleOpt) == 'function') {
 
                         dataPriv.access(moduleCache, _moduleName || moduleName, {
                             module: moduleOpt
-                        });
+                        })
 
                     }
 
-                };
+                }
 
-            }(args[0])));
+            }(args[0])))
 
-            return;
+            return
 
         }
 
-        new cacheModule(args[0], args[1], args[2], args[3]);
+        new cacheModule(args[0], args[1], args[2], args[3])
     }
-};
+}
 
 
-R.use = use(BaseModule);
+R.use = use(BaseModule)
+
+pluginsConfig.forEach(v => R.use({
+  install: {
+    [v.alias]: v.value,
+  }
+}))
+
+
+
 /*jshint ignore:start*/
-window.R = R;
+window.R = R
 /*jshint ignore:end*/

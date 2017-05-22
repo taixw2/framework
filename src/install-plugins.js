@@ -10,14 +10,9 @@ import {
  * @param  {[type]} options [安装插件所传入的配置]
  * @return {[type]}         [description]
  */
-export default function(BaseModule){
+export default BaseModule => (plugins, options) => {
 
-  return function(
-    plugins,
-    options
-  ){
-
-    if ( type(plugins) == "object" ) {
+    if (type(plugins) == "object") {
         plugins = plugins.install;
     }
 
@@ -33,9 +28,5 @@ export default function(BaseModule){
       }
 
     });
-
-  };
-
-
 
 }

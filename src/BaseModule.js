@@ -25,9 +25,8 @@ class Base {
 
 
         //js被加载后执行这个方法
-        //this.onLoad();
+        this.onLoad();
 
-        // console.log(require);
 
         /**
          * 挂载到节点之后
