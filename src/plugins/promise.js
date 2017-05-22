@@ -1,3 +1,5 @@
+// @https://github.com/lahmatiy/es6-promise-polyfill/
+
 import {isArray, noop} from "../utils.js"
 
 const PENDING = "pending"
