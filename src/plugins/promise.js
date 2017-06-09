@@ -92,7 +92,6 @@ const invokeResolver = (resolver, promise) => {
     }
 
     try {
-
         /**
          * resolver拥有两个参数
          * resolve, reject
