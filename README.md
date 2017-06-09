@@ -3,4 +3,4 @@
 
 ## promise
 
-![](./primise.pngs)
+![](./promise.pngs)
